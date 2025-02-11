@@ -17,12 +17,20 @@ namespace HotelAPI.Controllers
         [HttpGet("{name}")]
         public async Task<IActionResult> GetHotelByName(string name)
         {
-            var hotel = await _hotelService.GetHotelByNameAsync(name);
-            if (hotel == null)
+            try
             {
-                return NotFound();
+                var hotel = await _hotelService.GetHotelByNameAsync(name);
+                if (hotel == null)
+                {
+                    return NotFound();
+                }
+                return Ok(hotel);
             }
-            return Ok(hotel);
+            catch (Exception ex)
+            {
+                // Log the exception (logging mechanism can be added here)
+                return StatusCode(500, "Internal server error");
+            }
         }
     }
 }

@@ -25,6 +25,7 @@ namespace HotelAPI.Controllers
             }
             catch (Exception ex)
             {
+                // Log the exception (logging mechanism can be added here)
                 return BadRequest(ex.Message);
             }
         }
@@ -32,12 +33,20 @@ namespace HotelAPI.Controllers
         [HttpGet("{referenceNumber}")]
         public async Task<IActionResult> GetBookingByReferenceNumber(string referenceNumber)
         {
-            var booking = await _bookingService.GetBookingByReferenceNumberAsync(referenceNumber);
-            if (booking == null)
+            try
             {
-                return NotFound();
+                var booking = await _bookingService.GetBookingByReferenceNumberAsync(referenceNumber);
+                if (booking == null)
+                {
+                    return NotFound();
+                }
+                return Ok(booking);
             }
-            return Ok(booking);
+            catch (Exception ex)
+            {
+                // Log the exception (logging mechanism can be added here)
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

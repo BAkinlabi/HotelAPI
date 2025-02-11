@@ -17,15 +17,31 @@ namespace HotelAPI.Controllers
         [HttpPost("seed")]
         public async Task<IActionResult> SeedData()
         {
-            await _dataService.SeedDataAsync();
-            return Ok("Database seeded successfully.");
+            try
+            {
+                await _dataService.SeedDataAsync();
+                return Ok("Database seeded successfully.");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (logging mechanism can be added here)
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPost("reset")]
         public async Task<IActionResult> ResetData()
         {
-            await _dataService.ResetDataAsync();
-            return Ok("Database reset successfully.");
+            try
+            {
+                await _dataService.ResetDataAsync();
+                return Ok("Database reset successfully.");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (logging mechanism can be added here)
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

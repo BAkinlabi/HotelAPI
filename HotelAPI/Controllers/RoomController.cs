@@ -15,7 +15,15 @@ public class RoomController : ControllerBase
     [HttpGet("available")]
     public async Task<IActionResult> FindAvailableRooms([FromQuery] DateTime startDate, [FromQuery] DateTime endDate, [FromQuery] int numberOfGuests)
     {
-        var availableRooms = await _roomService.FindAvailableRoomsAsync(startDate, endDate, numberOfGuests);
-        return Ok(availableRooms);
+        try
+        {
+            var availableRooms = await _roomService.FindAvailableRoomsAsync(startDate, endDate, numberOfGuests);
+            return Ok(availableRooms);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception (logging mechanism can be added here)
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
     }
 }
