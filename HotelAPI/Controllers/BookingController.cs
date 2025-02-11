@@ -1,6 +1,7 @@
 ﻿using HotelAPI.Models;
 using HotelAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace HotelAPI.Controllers
 {
@@ -9,10 +10,12 @@ namespace HotelAPI.Controllers
     public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
+        private readonly ILogger<BookingController> _logger;
 
-        public BookingController(IBookingService bookingService)
+        public BookingController(IBookingService bookingService, ILogger<BookingController> logger)
         {
             _bookingService = bookingService;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -25,7 +28,7 @@ namespace HotelAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception (logging mechanism can be added here)
+                _logger.LogError(ex, "An error occurred while creating the booking.");
                 return BadRequest(ex.Message);
             }
         }
@@ -44,7 +47,7 @@ namespace HotelAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception (logging mechanism can be added here)
+                _logger.LogError(ex, "An error occurred while getting the booking.");
                 return BadRequest(ex.Message);
             }
         }

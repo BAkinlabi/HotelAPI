@@ -1,5 +1,6 @@
 ﻿using HotelAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace HotelAPI.Controllers
 {
@@ -8,10 +9,12 @@ namespace HotelAPI.Controllers
     public class DataController : ControllerBase
     {
         private readonly IDataService _dataService;
+        private readonly ILogger<DataController> _logger;
 
-        public DataController(IDataService dataService)
+        public DataController(IDataService dataService, ILogger<DataController> logger)
         {
             _dataService = dataService;
+            _logger = logger;
         }
 
         [HttpPost("seed")]
@@ -24,7 +27,7 @@ namespace HotelAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception (logging mechanism can be added here)
+                _logger.LogError(ex, "An error occurred while seeding the database.");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -39,7 +42,7 @@ namespace HotelAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception (logging mechanism can be added here)
+                _logger.LogError(ex, "An error occurred while seeding the database.");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }

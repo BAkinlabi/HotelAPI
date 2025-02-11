@@ -8,10 +8,12 @@ namespace HotelAPI.Controllers
     public class HotelController : ControllerBase
     {
         private readonly IHotelService _hotelService;
+        private readonly ILogger<HotelController> _logger;
 
-        public HotelController(IHotelService hotelService)
+        public HotelController(IHotelService hotelService, ILogger<HotelController> logger)
         {
             _hotelService = hotelService;
+            _logger = logger;
         }
 
         [HttpGet("{name}")]
@@ -28,7 +30,7 @@ namespace HotelAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception (logging mechanism can be added here)
+                _logger.LogError(ex, "An error occurred while getting the hotel.");
                 return StatusCode(500, "Internal server error");
             }
         }
