@@ -4,12 +4,11 @@ namespace HotelAPI.Models
 {
     public class Hotel
     {
-        [Key]
         public int Id { get; set; }
-        
-        [Required]
-        public string? Name { get; set; }
 
-        public ICollection<Room>? Rooms { get; set; }
+        [Required]
+        public string Name { get; set; } = string.Empty;
+        [Required]
+        public int NoOfRooms { get; set; }
     }
 }

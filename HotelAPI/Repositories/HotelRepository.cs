@@ -1,4 +1,5 @@
 ﻿using HotelAPI.Data;
+using HotelAPI.ModelDTOs;
 using HotelAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,37 +8,46 @@ namespace HotelAPI.Repositories
     public class HotelRepository : IHotelRepository
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<HotelRepository> _logger;
 
-        public HotelRepository(AppDbContext context)
+        public HotelRepository(AppDbContext context, ILogger<HotelRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
-        public async Task<Hotel> GetHotelByNameAsync(string name)
+        public async Task<HotelDTO> GetHotelByNameAsync(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
+                _logger.LogError("Bad name input data.");
                 throw new ArgumentException("Hotel name cannot be null or empty.", nameof(name));
             }
 
             try
             {
-                return await _context.Hotels.Include(h => h.Rooms).FirstOrDefaultAsync(h => h.Name == name)
-                    ?? throw new InvalidOperationException("Hotel not found.");
-            }
-            catch (DbUpdateException ex)
-            {
-                // Log the exception (logging mechanism not shown here)
-                throw new Exception("An error occurred while accessing the database.", ex);
+                HotelDTO hotelDTO = new HotelDTO();
+                var _hotel = await _context.Hotels.FirstOrDefaultAsync(n => n.Name == name);
+                
+                if(_hotel == null ) { return null; }          
+  
+                Dictionary<string, int> _rooms = _context.RoomTypes.ToDictionary(n => n.Name, n => n.Capacity);
+                hotelDTO.Id = _hotel.Id;
+                hotelDTO.Name = _hotel.Name;
+                hotelDTO.NumberOfRooms = _hotel.NoOfRooms;
+                hotelDTO.RoomTypes = _rooms;
+                
+
+                return hotelDTO;
             }
             catch (Exception ex)
             {
-                // Log the exception (logging mechanism not shown here)
-                throw new Exception("An unexpected error occurred.", ex);
+                _logger.LogError(ex, "An unexpected error occurred.");
+                return null;
             }
         }
 
-        
+
     }
 
 }

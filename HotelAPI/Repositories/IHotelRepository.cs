@@ -1,9 +1,10 @@
-﻿using HotelAPI.Models;
+﻿using HotelAPI.ModelDTOs;
+using HotelAPI.Models;
 
 namespace HotelAPI.Repositories
 {
     public interface IHotelRepository
     {
-        Task<Hotel> GetHotelByNameAsync(string name);
+        Task<HotelDTO> GetHotelByNameAsync(string name);
     }
 }

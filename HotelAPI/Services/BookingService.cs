@@ -1,59 +1,34 @@
-﻿using HotelAPI.Models;
+﻿using HotelAPI.ModelDTOs;
+using HotelAPI.Models;
 using HotelAPI.Repositories;
 
 namespace HotelAPI.Services
 {
     public class BookingService : IBookingService
     {
-        private readonly IRoomRepository _roomRepository;
         private readonly IBookingRepository _bookingRepository;
 
-        public BookingService(IRoomRepository roomRepository, IBookingRepository bookingRepository)
+        public BookingService(IBookingRepository bookingRepository)
         {
-            _roomRepository = roomRepository;
             _bookingRepository = bookingRepository;
         }
 
-        public async Task<Booking> CreateBookingAsync(BookingRequest request)
+        public async Task<IEnumerable<RoomAvailableDTO>> CheckRoomAvailibilityAsync(int numberOfPeople, DateOnly checkIn, DateOnly checkOut)
         {
-            // This implementation ensures that:
-            // A room cannot be double booked for any given night.
-            // A room cannot be occupied by more people than its capacity.
-            // Guests do not need to change rooms during their stay.
+            Console.WriteLine($"Check available rooms for {numberOfPeople}, people. Starting on {checkIn} and leaving on {checkOut}");
 
-            // Check if the room is available for the entire stay
-            var room = await _roomRepository.GetRoomByIdAsync(request.RoomId);
+            // Check if any bookings exist in booking table and remove them from the available rooms to return to the caller
+            var result = await _bookingRepository.FindRoomsAvailableAsync(numberOfPeople, checkIn, checkOut);
 
-            if (room == null)
-            {
-                throw new Exception("Room not found.");
-            }
 
-            if (room.Capacity < request.NumberOfGuests)
-            {
-                throw new Exception("Room capacity exceeded.");
-            }
+            return result;
+        }
 
-            var overlappingBookings = room.Bookings
-                .Where(b => b.StartDate < request.EndDate && b.EndDate > request.StartDate)
-                .ToList();
-
-            if (overlappingBookings.Any())
-            {
-                throw new Exception("Room is already booked for the selected dates.");
-            }
-
+        public async Task<string> CreateBookingAsync(BookingDTO request)
+        {
             // Create the booking
-            var booking = new Booking
-            {
-                BookingNumber = Guid.NewGuid().ToString(),
-                RoomId = request.RoomId,
-                StartDate = request.StartDate,
-                EndDate = request.EndDate,
-                NumberOfGuests = request.NumberOfGuests
-            };
+            return await _bookingRepository.SaveBookingAsync(request);
 
-            return await _bookingRepository.SaveBookingAsync(booking);
         }
 
         public async Task<Booking> GetBookingByReferenceNumberAsync(string referenceNumber)

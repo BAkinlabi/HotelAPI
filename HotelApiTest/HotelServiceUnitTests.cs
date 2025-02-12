@@ -2,6 +2,7 @@ using Moq;
 using HotelAPI.Models; 
 using HotelAPI.Repositories;
 using HotelAPI.Services;
+using HotelAPI.ModelDTOs;
 
 namespace HotelApiTest
 {
@@ -11,29 +12,24 @@ namespace HotelApiTest
         private readonly Mock<IHotelRepository> _hotelRepositoryMock;
         private readonly IBookingService _bookingService;
         private readonly Mock<IBookingRepository> _bookingRepositoryMock;
-        private readonly IRoomService _roomService;
-        private readonly Mock<IRoomRepository> _roomRepositoryMock;
+
 
         public HotelServiceTests()
         {
             _hotelRepositoryMock = new Mock<IHotelRepository>();
             _hotelService = new HotelService(_hotelRepositoryMock.Object);
 
-
-            _roomRepositoryMock = new Mock<IRoomRepository>();
-            _roomService = new RoomService(_roomRepositoryMock.Object);
-
             _bookingRepositoryMock = new Mock<IBookingRepository>();
-            _bookingService = new BookingService(_roomRepositoryMock.Object, _bookingRepositoryMock.Object);
+            _bookingService = new BookingService(_bookingRepositoryMock.Object);
         }
 
         [Fact]
-        public async Task GetHotelByName_ShouldReturnHotel_WhenHotelExists()
+        public async Task GetHotelByName_ShouldReturnHotelDTO_WhenHotelExists()
         {
             // Arrange
             var hotelName = "Test Hotel";
-            var hotel = new Hotel { Name = hotelName };
-            _hotelRepositoryMock.Setup(repo => repo.GetHotelByNameAsync(hotelName)).ReturnsAsync(hotel);
+            var hotelDTO = new HotelDTO { Name = hotelName }; 
+            _hotelRepositoryMock.Setup(repo => repo.GetHotelByNameAsync(hotelName)).ReturnsAsync(hotelDTO);
 
             // Act
             var result = await _hotelService.GetHotelByNameAsync(hotelName);
@@ -47,7 +43,7 @@ namespace HotelApiTest
         public async Task GetBookingByReference_ShouldReturnBooking_WhenBookingExists()
         {
             // Arrange
-            var bookingReference = "92e6a772-a40c-49ec-b8cb-d56ef926ecdd";
+            var bookingReference = "BookingRer001";
             var booking = new Booking { BookingNumber = bookingReference };
             _bookingRepositoryMock.Setup(repo => repo.GetBookingByReferenceNumberAsync(bookingReference)).ReturnsAsync(booking);
 

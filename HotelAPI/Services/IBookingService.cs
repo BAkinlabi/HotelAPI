@@ -1,10 +1,12 @@
-﻿using HotelAPI.Models;
+﻿using HotelAPI.ModelDTOs;
+using HotelAPI.Models;
 
 namespace HotelAPI.Services
 {
     public interface IBookingService
     {
-        Task<Booking> CreateBookingAsync(BookingRequest request);
+        Task<IEnumerable<RoomAvailableDTO>> CheckRoomAvailibilityAsync(int numberOfPeople, DateOnly checkIn, DateOnly checkOut);
+        Task<string> CreateBookingAsync(BookingDTO request);
         Task<Booking> GetBookingByReferenceNumberAsync(string referenceNumber);
     }
 }

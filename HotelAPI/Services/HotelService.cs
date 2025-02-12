@@ -1,4 +1,5 @@
-﻿using HotelAPI.Models;
+﻿using HotelAPI.ModelDTOs;
+using HotelAPI.Models;
 using HotelAPI.Repositories;
 
 namespace HotelAPI.Services
@@ -12,7 +13,7 @@ namespace HotelAPI.Services
             _hotelRepository = hotelRepository;
         }
 
-        public async Task<Hotel> GetHotelByNameAsync(string name)
+        public async Task<HotelDTO> GetHotelByNameAsync(string name)
         {
             return await _hotelRepository.GetHotelByNameAsync(name);
         }

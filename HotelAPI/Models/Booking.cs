@@ -3,25 +3,23 @@
 namespace HotelAPI.Models
 {
     public class Booking
-{
-    [Key]
-    public int Id { get; set; }
+    {
+        public int Id { get; set; }
 
-    [Required]
-    public string? BookingNumber { get; set; }
+        [Required]
+        public string? BookingNumber { get; set; }
+        [Required]
+        public int RoomTypeId { get; set; }
 
-    [Required]
-    public int RoomId { get; set; }
-    
-    public Room? Room { get; set; }
+        [Required]
+        public DateOnly StartDate { get; set; }
 
-    [Required]
-    public DateTime StartDate { get; set; }
+        [Required]
+        public DateOnly EndDate { get; set; }
 
-    [Required]
-    public DateTime EndDate { get; set; }
+        [Required]
+        public int NumberOfGuests { get; set; }
 
-    [Required]
-    public int NumberOfGuests { get; set; }
-}
+        public DateTime CreatedDate { get; set; }
+    }
 }

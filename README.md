@@ -13,8 +13,8 @@
 ## API Endpoints
 
 - `GET /api/hotel/{name}`: Find a hotel by name.
-- `GET /api/room/available`: Find available rooms between two dates for a given number of people. e.g: "http://localhost:5000/api/room/available?startDate=2023-12-01&endDate=2023-12-05&numberOfGuests=2"
-- `POST /api/booking`: Book a room.
+- `GET /api/room/checkroom`: Find available rooms between two dates for a given number of people. e.g: "http://localhost:5000/api/room/available?startDate=2023-12-01&endDate=2023-12-05&numberOfGuests=2"
+- `POST /api/booking/createbooking`: Book a room.
 - `GET /api/booking/{referenceNumber}`: Find booking details by reference number.
 
 - `POST /api/data/seed`: Seeds the database with initial data.

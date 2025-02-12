@@ -4,6 +4,8 @@ using HotelAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using Serilog;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,13 +29,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Add controller dependency Injection
 
+
 builder.Services.AddScoped<IHotelRepository, HotelRepository>();
-builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IHotelService, HotelService>();
 builder.Services.AddScoped<IDataService, DataService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
-builder.Services.AddScoped<IRoomService, RoomService>();
+
+builder.Services.AddControllers().AddXmlSerializerFormatters();
 
 // Add services to the container.
 
@@ -45,7 +48,17 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddSwaggerGen(options =>
+{
+    // Set the comments path for the Swagger JSON and UI
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
+});
+
 
 // Configure logging
 builder.Services.AddLogging(loggingBuilder =>
@@ -64,7 +77,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HotelApi v1"));
 }
 
-// app.UseRouting();
+app.UseRouting();
 
 app.UseHttpsRedirection();
 
